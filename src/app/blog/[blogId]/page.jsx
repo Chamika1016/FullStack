@@ -1,14 +1,29 @@
 import React from "react";
 import styles from "./page.module.css";
 import Image from "next/image";
-const page = () => {
+import { notFound } from "next/navigation";
+
+async function getData(blogId) {
+  const res = await fetch(
+    `https://jsonplaceholder.typicode.com/posts/${blogId}`,
+    {
+      cache: "no-store",
+    }
+  );
+
+  if (!res.ok) {
+    return notFound();
+  }
+
+  return res.json();
+}
+const page = async ({ params }) => {
+  const data = await getData(params.blogId);
   return (
     <div className={styles.container}>
       <div className={styles.top}>
         <div className={styles.info}>
-          <h1 className={styles.title}>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit.
-          </h1>
+          <h1 className={styles.title}>{data.title}</h1>
           <p className={styles.desc}>
             Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eaque
             quaerat veniam ab aspernatur earum laborum, molestias sunt corporis
